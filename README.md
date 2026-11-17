@@ -1,4 +1,6 @@
-# Python authentication QA runner — Step 3
+# Python authentication QA runner — showcase example
+
+Part of the [AI-assisted automation showcase](https://github.com/camiloavilacm/qa-features). Choose a framework to study; running all three together is optional. Start with the [reviewer guide](https://github.com/camiloavilacm/qa-features/blob/main/REVIEWER_GUIDE.md) or [tested one-framework first run](https://github.com/camiloavilacm/qa-features/blob/main/docs/first-run.md).
 
 Runs the approved SEED-1 Gherkin unchanged with pytest-bdd through Playwright and Selenium against either Conduit SUT. Each slot executes AC-1, AC-2 and AC-3; the four-slot matrix requires 12 passes. Selectors come only from the pinned contract's labels, roles and data-testid values. The baseline is read-only; registrations use unique execution identities.
 
@@ -38,6 +40,8 @@ Playwright consumes Chromium CDP events; Selenium consumes Chrome performance/CD
 
 AC-3 independently asserts the 422 response, exact UI error, empty cookies/storage and denial of a direct protected-page visit. The SUT's separate Hurl unauthenticated GET /user check remains part of Step 2; this runner does not replace that evidence.
 
-Development acceptance uses harness/scripts/preflight.py, verify_step.py run --check 12-passes, verify_step.py run --check observer-complete, verify_step.py validate, verify_step.py gate and scope_guard.py against the retained baseline. Supply the operator-owned external QA_AUTHORIZATION_FILE and QA_EVIDENCE_KEY_FILE. The local controller extension is documented under governance/; canonical frozen governance is untouched. Runtime reports are excluded only from the source digest and remain in the scope audit.
+Development acceptance uses harness/scripts/preflight.py, verify_step.py run --check 12-passes, verify_step.py run --check observer-complete, verify_step.py validate, verify_step.py gate and scope_guard.py against the retained baseline. Supply the operator-owned external QA_AUTHORIZATION_FILE and QA_EVIDENCE_KEY_FILE. The current shared controller and formal outcome contract are distributed locally, with provenance under harness/ and governance/. Runtime reports are excluded only from the source digest and remain in the scope audit.
 
 Claude artifacts are retained and statically checked. Live Claude remains NOT RUN under the approved exception. This repository contains no Cypress runner, tracker, campaign orchestration or release tooling.
+
+Code is [MIT licensed](LICENSE). See [contribution guidance](CONTRIBUTING.md), [security scope](SECURITY.md), and [third-party notices](THIRD_PARTY_NOTICES.md).
