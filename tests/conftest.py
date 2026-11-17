@@ -14,6 +14,7 @@ def pytest_addoption(parser):
       '--sut-revision':dict(required=True),
       '--campaign-id':dict(default='local'),
       '--execution-id':dict(default=None),
+      '--tooling-ref':dict(default=None),
       '--result-dir':dict(required=True),
     }.items():parser.addoption(name,**options)
 
@@ -22,13 +23,15 @@ def pytest_configure(config):
     for tag in ('SEED-1','AC-1','AC-2','AC-3'):config.addinivalue_line('markers',tag+': approved story/AC tag')
     revision=config.getoption('--sut-revision')
     assert re.fullmatch(r'[a-f0-9]{40}([a-f0-9]{24})?',revision),'Real source/image revision required'
+    tooling=config.getoption('--tooling-ref')
+    assert tooling is None or re.fullmatch(r'[a-f0-9]{40}([a-f0-9]{24})?',tooling),'Immutable tooling revision required'
     directory=Path(config.getoption('--result-dir')).resolve()
     assert directory.is_relative_to(ROOT/'reports'),'Results must live under reports/'
     assert not directory.exists(),'Refusing to overwrite an execution'
     directory.mkdir(parents=True)
     execution=config.getoption('--execution-id') or uuid.uuid4().hex
     config.qa_directory=directory
-    config.qa_result={'schema_version':'1.0','issue_id':'SEED-1','campaign_id':config.getoption('--campaign-id'),'execution_id':execution,'feature_ref':REF,'tooling_ref':None,'slot_id':config.getoption('--sut')+':'+config.getoption('--driver'),'sut_revision':revision,'runner_revision':source_revision(),'started_at':now(),'finished_at':now(),'status':'not_run','scenarios':[{'id':id,'status':'not_run','duration_ms':0,'observer':{'state':'unavailable','events':[],'detail':'Scenario not executed'},'artifacts':[],'error':'Not executed'}for id in ('AC-1','AC-2','AC-3')]}
+    config.qa_result={'schema_version':'1.0','issue_id':'SEED-1','campaign_id':config.getoption('--campaign-id'),'execution_id':execution,'feature_ref':REF,'tooling_ref':tooling,'slot_id':config.getoption('--sut')+':'+config.getoption('--driver'),'sut_revision':revision,'runner_revision':source_revision(),'started_at':now(),'finished_at':now(),'status':'not_run','scenarios':[{'id':id,'status':'not_run','duration_ms':0,'observer':{'state':'unavailable','events':[],'detail':'Scenario not executed'},'artifacts':[],'error':'Not executed'}for id in ('AC-1','AC-2','AC-3')]}
 
 def pytest_bdd_apply_tag(tag,function):
     getattr(pytest.mark,tag)(function);return True
